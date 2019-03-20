@@ -3,10 +3,6 @@ cfsd proxy CAN getway
 
 Mapping the CAN messages to Opendlv messages
 
-<<<<<<< HEAD
-
-
-=======
 This version is for the communicate with the lynx car
 
 messages:
@@ -20,16 +16,11 @@ lynx19gw.dbc is the CAN database file which is a reference for decoding and enco
 lynx19gw.dbc.map is the mapping setting file for the microservice knowing how to map the messsages.
 
 Messege senderStamps See: CAN Mapping.md
->>>>>>> cfsd-lynx
 
 run the microservice:
 
 ```
-<<<<<<< HEAD
-docker run cfsd-proxy-cangw:v0.0.0 --cid=111 --can=can0 --enablethrottle --enablebrake --enablesteering --verbose
-=======
 docker run --rm -ti --net=host --privileged cfsd-proxy-cangw:v0.0.0 --cid=111 --can=can0 --verbose
->>>>>>> cfsd-lynx
 ```
 
 

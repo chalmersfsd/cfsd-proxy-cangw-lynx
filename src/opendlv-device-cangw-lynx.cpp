@@ -64,10 +64,6 @@ int32_t main(int32_t argc, char **argv) {
         // Delegate to convert incoming CAN frames into ODVD messages that are broadcast into the OD4Session.
         auto decode = [&od4, VERBOSE, ID,&brakeState](cluon::data::TimeStamp ts, uint16_t canFrameID, uint8_t *src, uint8_t len) {
             if ( (nullptr == src) || (0 == len) ) return;
-<<<<<<< HEAD
-
-
-=======
             // pedals reading
             if (LYNX19GW_NF_NR_SENSORS_1_FRAME_ID == canFrameID) {
                 lynx19gw_nf_nr_sensors_1_t tmp;
@@ -186,7 +182,6 @@ int32_t main(int32_t argc, char **argv) {
                     od4.send(msgDlStatus,ts,1924);
                 }
             }   
->>>>>>> cfsd-lynx
         };
 
 #ifdef __linux__
@@ -231,52 +226,6 @@ int32_t main(int32_t argc, char **argv) {
         std::cerr << "failed (SocketCAN not available on this platform). " << std::endl;
         return retCode;
 #endif
-<<<<<<< HEAD
-/*
-        // Delegate for handling incoming opendlv.proxy.ActuationRequest.
-        auto onActuationRequest = [&socketCAN, ENABLED_ACTUATION_BRAKE, ENABLED_ACTUATION_THROTTLE, ENABLED_ACTUATION_STEERING](cluon::data::Envelope &&env){
-            opendlv::proxy::ActuationRequest ar = cluon::extractMessage<opendlv::proxy::ActuationRequest>(std::move(env));
-
-            const float acceleration{ar.acceleration()};
-            if (acceleration < 0.0f) {
-                // opendlv::proxy::lynx::BrakeRequest brakeRequest;
-                // brakeRequest.enableRequest(ENABLED_ACTUATION_BRAKE && isValid);
-
-                // const float max_deceleration{2.0f};
-                // if (acceleration < -max_deceleration) {
-                //     if (ENABLED_ACTUATION_BRAKE && isValid) {
-                //       std::clog << "[opendlv-device-cangw-lynx] WARNING: Deceleration was limited to " 
-                //         << max_deceleration << ". This should never happen, and "
-                //         << "may be a safety violating behaviour!" 
-                //         << std::endl;
-                //     }
-                //     brakeRequest.brake(-max_deceleration);
-                // }
-                // else {
-                //     brakeRequest.brake(acceleration);
-                // }
-
-                {
-//                     lynx19gw_brake_request_t tmp;
-//                     tmp.brake_request = lynx19gw_brake_request_brake_request_encode(brakeRequest.brake());
-//                     tmp.enable_brake_request = lynx19gw_brake_request_enable_brake_request_encode(brakeRequest.enableRequest());
-
-//                     // The following statement packs the encoded values into a CAN frame.
-//                     uint8_t buffer[8];
-//                     int len = lynx19gw_brake_request_pack(buffer, &tmp, 8);
-//                     if ( (0 < len) && (-1 < socketCAN) ) {
-// #ifdef __linux__
-//                         struct can_frame frame;
-//                         frame.can_id = lynx19gw_BRAKE_REQUEST_FRAME_ID;
-//                         frame.can_dlc = len;
-//                         memcpy(frame.data, buffer, 8);
-//                         int32_t nbytes = ::write(socketCAN, &frame, sizeof(struct can_frame));
-//                         if (!(0 < nbytes)) {
-//                             std::clog << "[SocketCANDevice] Writing ID = " << frame.can_id << ", LEN = " << +frame.can_dlc << ", strerror(" << errno << "): '" << strerror(errno) << "'" << std::endl;
-//                         }
-// #endif
-//                     }
-=======
         
 // Encode Vehicle State
         opendlv::proxyCANWriting::ASStatus msgASStatus;
@@ -292,7 +241,6 @@ int32_t main(int32_t argc, char **argv) {
                 msgASStatus.asRedyToDrive(sstateReading.state());
                 if (VERBOSE){
                     std::cerr << "received asRedyToDrive:"<< sstateReading.state() <<std::endl;
->>>>>>> cfsd-lynx
                 }
             }
         };
@@ -343,11 +291,6 @@ int32_t main(int32_t argc, char **argv) {
         };
         od4.dataTrigger(opendlv::proxy::PressureReading::ID(), onPressureReading);
 
-<<<<<<< HEAD
-        // Register our lambda for the message identifier for opendlv::proxy::lynx::AccelerationRequest.
-        od4.dataTrigger(opendlv::proxy::ActuationRequest::ID(), onActuationRequest);
-*/
-=======
 
         // Set the Autonomus sensors sending the messages to via CAN to Datalogger with a certain frequency.
         int AS2DLFREQ = 33; //sest the update to 33 frame
@@ -446,7 +389,6 @@ int32_t main(int32_t argc, char **argv) {
         }};
         od4.dataTrigger(opendlv::proxy::TorqueRequest::ID(), onTorqueRequest);
 
->>>>>>> cfsd-lynx
         struct can_frame frame;
         fd_set rfds;
         struct timeval timeout;

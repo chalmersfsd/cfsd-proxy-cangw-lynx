@@ -10,19 +10,11 @@ lynx19gw_as_dl_sensors_t.pressure_regulator:opendlv.proxyCANWriting.ASStatus.pre
 lynx19gw_as_dl_sensors_t.as_rtd:opendlv.proxyCANWriting.ASStatus.asRedyToDrive
 lynx19gw_nr_dl_sensors_4_new_t.dummy:
 lynx19gw_nr_dl_tv_out_3_new_t.dummy:
-<<<<<<< HEAD
-lynx19gw_dl_as_status_t.as_mission:
-lynx19gw_dl_as_status_t.brake_front:
-lynx19gw_dl_as_status_t.brake_rear:
-lynx19gw_dl_as_status_t.dl_status:
-lynx19gw_dl_as_status_t.acc_so_c:
-=======
 lynx19gw_dl_as_status_t.as_mission:opendlv.proxyCANReading.AsStatus.asMission
 lynx19gw_dl_as_status_t.brake_front:opendlv.proxyCANReading.AsStatus.brakeFront
 lynx19gw_dl_as_status_t.brake_rear:opendlv.proxyCANReading.AsStatus.brakeRear
 lynx19gw_dl_as_status_t.dl_status:opendlv.proxyCANReading.AsStatus.dlStatus
 lynx19gw_dl_as_status_t.acc_so_c:opendlv.proxyCANReading.AsStatus.accSoC
->>>>>>> cfsd-lynx
 lynx19gw_nr_dl_tv_out_2_t.tv_out_mu:
 lynx19gw_nr_dl_tv_out_2_t.tv_out_sw_ang:
 lynx19gw_nr_dl_tv_out_2_t.tv_out_tv_l_act:
@@ -124,15 +116,9 @@ lynx19gw_nr_dl_sensors_1_t.wheel_speed_rr:opendlv.proxyCANReading.WheelSpeedRare
 lynx19gw_nf_nr_sensors_1_t.disk_temp_fl:
 lynx19gw_nf_nr_sensors_1_t.disk_temp_fr:
 lynx19gw_nf_nr_sensors_1_t.steering_angle:
-<<<<<<< HEAD
-lynx19gw_nf_nr_sensors_1_t.throttle:
-lynx19gw_nf_nr_sensors_2_t.wheel_speed_fl:
-lynx19gw_nf_nr_sensors_2_t.wheel_speed_fr:
-=======
 lynx19gw_nf_nr_sensors_1_t.brake:opendlv.proxyCANReading.PedalRatio.brake
 lynx19gw_nf_nr_sensors_1_t.throttle:opendlv.proxyCANReading.PedalRatio.throttle
 lynx19gw_nf_nr_sensors_2_t.wheel_speed_fl:opendlv.proxyCANReading.WheelSpeedFront.wheelFrontLeft
 lynx19gw_nf_nr_sensors_2_t.wheel_speed_fr:opendlv.proxyCANReading.WheelSpeedFront.wheelFrontRight
->>>>>>> cfsd-lynx
 lynx19gw_nf_nr_sensors_2_t.damper_fl:
 lynx19gw_nf_nr_sensors_2_t.damper_fr:
