@@ -66,3 +66,8 @@ message opendlv.proxyCANReading.RESStatus [id = 2008]{
     int resQuality [id = 3];
     int resButtons [id = 4]; 
 }
+
+message opendlv.proxyCANReading.Knobs [id = 2007]{
+    int knobL [id = 1];
+    int knobR [id = 2];
+}

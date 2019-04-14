@@ -1,6 +1,6 @@
 ### CAN Mapping
 
-lynx-v0.1.0.odvd <-> lynx19gw.dbc
+lynx-v0.1.1.odvd <-> lynx19gw.dbc
 
 |    CAN message    |       CAN signal       | Lynx message                            |    msg signal     | sensor/req/log |      unit       |
 | :---------------: | :--------------------: | --------------------------------------- | :---------------: | :------------: | :-------------: |
@@ -25,6 +25,8 @@ lynx-v0.1.0.odvd <-> lynx19gw.dbc
 |                   |   Pressure_EBS_Line    |                                         |  pressureEBSLine  |      log       |       bar       |
 |                   |    Pressure_EBS_Act    |                                         |  pressureEBSAct   |      log       |       bar       |
 |                   |        AS_State        |                                         |      asState      |      log       |     states      |
+| NF_DL_Buttons_RTD |         Knob_R         | opendlv.proxyCANReading.Knobs           |       knobR       |     sensor     |    int 1-12     |
+|                   |         Knob_L         |                                         |       knobL       |     seneor     |    int 1-12     |
 
 *[1] math equation: from speed to torque see: opendlv-logic-action-motion-cfsd
 
@@ -36,7 +38,7 @@ lynx-v0.1.0.odvd <-> lynx19gw.dbc
 
 ### Lynx Message to OpenDLV message
 
-lynx-v0.1.0.odvd <-> opendlv-standard-message-set-v0.9.7.odvd
+lynx-v0.1.1.odvd <-> opendlv-standard-message-set-v0.9.7.odvd
 
 |            OpenDLV message            | sender stamp | Lynx message                            |    msg signal     | sensor/req/log |      unit       |
 | :-----------------------------------: | :----------: | --------------------------------------- | :---------------: | :------------: | :-------------: |
@@ -61,3 +63,5 @@ lynx-v0.1.0.odvd <-> opendlv-standard-message-set-v0.9.7.odvd
 |                                       |     1201     |                                         |  pressureEBSLine  |      log       |       bar       |
 |                                       |     1203     |                                         |  pressureEBSAct   |      log       |       bar       |
 |  opendlv::proxy::SwitchStateReading   |     1401     |                                         |      asState      |      log       |     states      |
+|                                       |     1416     | opendlv.proxyCANReading.Knobs           |       knobR       |     seneor     |    int 1-12     |
+|                                       |     1417     |                                         |       knobL       |     seneor     |    int 1-12     |

@@ -79,8 +79,8 @@ lynx19gw_bms_client_cell_voltages_t.bms_voltage_payload_1:
 lynx19gw_bms_client_cell_voltages_t.bms_voltage_payload_2:
 lynx19gw_bms_client_cell_voltages_t.bms_voltage_payload_3:
 lynx19gw_nf_dl_buttons_rtd_t.buttons:
-lynx19gw_nf_dl_buttons_rtd_t.knob_l:
-lynx19gw_nf_dl_buttons_rtd_t.knob_r:
+lynx19gw_nf_dl_buttons_rtd_t.knob_l:opendlv.proxyCANReading.Knobs.knobL
+lynx19gw_nf_dl_buttons_rtd_t.knob_r:opendlv.proxyCANReading.Knobs.knobR
 lynx19gw_nf_dl_buttons_rtd_t.redy_to_drive:
 lynx19gw_datalogger_config_t.config_id:
 lynx19gw_datalogger_config_t.config_payload_1:

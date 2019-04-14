@@ -182,6 +182,31 @@ int32_t main(int32_t argc, char **argv) {
                     od4.send(msgDlStatus,ts,1924);
                 }
             }   
+            // KnobL and KnobR Readings on the steering wheel
+            if (LYNX19GW_NF_DL_BUTTONS_RTD_FRAME_ID == canFrameID) {
+                lynx19gw_nf_dl_buttons_rtd_t tmp;
+                if (0 == lynx19gw_nf_dl_buttons_rtd_unpack(&tmp, src, len)) {
+                    opendlv::proxyCANReading::Knobs msg;
+                    msg.knobL(lynx19gw_nf_dl_buttons_rtd_knob_l_decode(tmp.knob_l));
+                    msg.knobR(lynx19gw_nf_dl_buttons_rtd_knob_r_decode(tmp.knob_r));
+                    // The following block is automatically added to demonstrate how to display the received values.
+                    if (VERBOSE) {
+                        std::stringstream sstr;
+                        msg.accept([](uint32_t, const std::string &, const std::string &) {},
+                                [&sstr](uint32_t, std::string &&, std::string &&n, auto v) { sstr << n << " = " << v << '\n'; },
+                                []() {});
+                        std::cout << sstr.str() << std::endl;
+                    }
+
+                    opendlv::proxy::SwitchStateReading msgKnobR;
+                    msgKnobR.state(msg.knobR());
+                    od4.send(msgKnobR,ts,1416);
+
+                    opendlv::proxy::SwitchStateReading msgKnobL;
+                    msgKnobL.state(msg.knobL());
+                    od4.send(msgKnobL,ts,1417);
+                }
+            }
         };
 
 #ifdef __linux__

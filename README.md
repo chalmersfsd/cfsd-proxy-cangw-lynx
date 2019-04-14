@@ -9,7 +9,7 @@ messages:
 
 The mapping info of messages can be found at CAN Mapping.md
 
-lynx-v0.1.0.odvd is the message set for talking to CAN should only be used in these CAN getway microservice.
+lynx-v0.1.1.odvd is the message set for talking to CAN should only be used in these CAN getway microservice.
 
 lynx19gw.dbc is the CAN database file which is a reference for decoding and encoding the CAN message.
 
@@ -17,10 +17,15 @@ lynx19gw.dbc.map is the mapping setting file for the microservice knowing how to
 
 Messege senderStamps See: CAN Mapping.md
 
+-- update:
+2019-04-10 Change Data logger sending message value, setting offsets and scale. (To adapt the proxy to the datalogger format see: https://github.com/chalmersfsd/CFS17_Firmware/blob/master/C_FW/Libraries/GUI.c#L1070 )
+
+2019-04-14 ADD Messages : KnobL and KnobR
+
 run the microservice:
 
 ```
-docker run --rm -ti --net=host --privileged cfsd-proxy-cangw:v0.0.0 --cid=111 --can=can0 --verbose
+docker run --rm -ti --net=host --privileged chalmersfsd/cfsd-proxy-cangw-lynx:v0.1.2 --cid=111 --can=can0 --verbose
 ```
 
 
