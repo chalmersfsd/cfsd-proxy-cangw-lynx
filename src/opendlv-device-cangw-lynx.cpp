@@ -332,12 +332,12 @@ int32_t main(int32_t argc, char **argv) {
             lynx19gw_as_dl_sensors_t tmp;
             memset(&tmp, 0, sizeof(tmp));
             tmp.as_state = lynx19gw_as_dl_sensors_as_state_encode(msgASStatusCpy.asState());
-            tmp.steering_position = lynx19gw_as_dl_sensors_steering_position_encode(msgASStatusCpy.steeringPosition());
-            tmp.rack_position = lynx19gw_as_dl_sensors_rack_position_encode(msgASStatusCpy.rackPosition());
-            tmp.pressure_ebs_act = lynx19gw_as_dl_sensors_pressure_ebs_act_encode(msgASStatusCpy.pressureEBSAct());
-            tmp.pressure_ebs_line = lynx19gw_as_dl_sensors_pressure_ebs_line_encode(msgASStatusCpy.pressureEBSLine());
-            tmp.pressure_service = lynx19gw_as_dl_sensors_pressure_service_encode(msgASStatusCpy.pressureService());
-            tmp.pressure_regulator = lynx19gw_as_dl_sensors_pressure_regulator_encode(msgASStatusCpy.pressureRegulator());
+            tmp.steering_position = lynx19gw_as_dl_sensors_steering_position_encode((msgASStatusCpy.steeringPosition() + 25) * 5);
+            tmp.rack_position = lynx19gw_as_dl_sensors_rack_position_encode((msgASStatusCpy.rackPosition() + 25) * 5);
+            tmp.pressure_ebs_act = lynx19gw_as_dl_sensors_pressure_ebs_act_encode(msgASStatusCpy.pressureEBSAct()*20);
+            tmp.pressure_ebs_line = lynx19gw_as_dl_sensors_pressure_ebs_line_encode(msgASStatusCpy.pressureEBSLine()*20);
+            tmp.pressure_service = lynx19gw_as_dl_sensors_pressure_service_encode(msgASStatusCpy.pressureService()*20);
+            tmp.pressure_regulator = lynx19gw_as_dl_sensors_pressure_regulator_encode(msgASStatusCpy.pressureRegulator()*20);
             tmp.as_rtd = lynx19gw_as_dl_sensors_as_rtd_encode(msgASStatusCpy.asRedyToDrive());
             // The following statement packs the encoded values into a CAN frame.
             uint8_t buffer[8];
