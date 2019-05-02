@@ -3,8 +3,7 @@ language: cpp
 sudo: required
 branches:
   only:
-  - "/^master$/"
-  - "/^pre-release$/"
+  - "/^test.*$/"
   - "/^v.*$/"
 services:
 - docker
@@ -13,23 +12,19 @@ addons:
     update: true
 env:
   global:
-  - BRANCH=${TRAVIS_BRANCH}
-  - TAG=${TRAVIS_TAG}
   - DOCKERHUB='chalmersfsd'
   - IMAGE=`echo ${TRAVIS_REPO_SLUG#*/}`
-  - secure: Pc7u5KdLhZKB5md0jY0uG4KYbfO4p6Yp5SNDQ0wsT9cnQ7Rd7Xe+b0687fCHkQxo7/WaW68J2Ns8tYYnakOqAygIf3udSx+rsoY6YAsxA/kGMjXMXlfi9NZbRfCT/OUNmReKwpqUCX8ZjOguCFOFBJzQAyjEZZI2KFwAA9BrCigQ3+UsZBbUcSiTxl0ZstHSM0cUyEvTM1M0rFPpJUY458VLrSY4W26Jw7+J0HEoN3TN6Mm2RPlejvQjwC7lH6mEt5zZNgWqm9A/TsVqAXLUEr0Hk6IxsBhiSGPI3/x/IVnXxb3LfQaAhqK+Pom24vnBnwmvjAOZsuWDo2FduddNrNmZ13pPJfO6wfvAvHSMZ6YzSw1lh4CI6obsLVaPO1CPIcrWaR1WUVCM7ur3/7cTb8uTrK9iQQGDZMyVA839NHwGYn9d7NX3dpumQzefqfViVqqo86sSf+8uXM0EbDhwOfIgFWk8V9bmNeRxZ2lfk2aN9QGsM9WhFEUtAL36qGMZQwbgwmYinpfoFhBWQ9YJr5ds9OYHkuWAfhqqqN99xTryBa6pICrgcrL+Jvpx733O51PPrEV9uxPoW3w91EbrSJoPgS2kBb5dmfO12gG8Uu1kRW77qET7I8S3mFfdOOwN8581ONBCh1hpJVOnOrzkVYnUm1i3a+ZF/RXPXZxG9W8=
-  - secure: z7vQ4LPCI1W2RVnIOdOKknRzHfb0C/JuZaq2luPDsqkVvWlzAGGw6YX4o5BZ0XC4cxZHkpFPchht8KtHot7O/5c4xko+rvFF69/gbwAeqn70+hqsksOQYiQBvV6AYxagTmVvaT9PH4hOxzlMkVCQFpvx2ZX0EASNsE+4HqQPg3kXPfSj9NllfhqrEZBV6THCyVxgZ1th4w+fDt5wM7t+VGT9tdi06we4S3nXSBviQ5MnOf8pLVDQGhw3yTelO7UEe/COk4hF6UZdlwofYL8EA+6N2HKPRqKmnZmo/XpvrrSWhie7a/qQ8v3dmamWQwSDwhSfYcOwgTgxOKYdD4plwagPl0Tr8Dxvc6Ave7wg6aIQXTg9vzsrXvFmcLEc3VgCgOGxUPv8zE20s9Im4QGVZBPF3P1nwIqJVkDEre7Aae0BoTLde1poYi1evvr3YhJUThI1oRv8ZlrzlrfjCvZl/CbGt2OQC5iN0YRdWw3DZUsw4yUOSeFKPyuuXmuejkcfGVnRpXiAS4J9aZvDlgAxRFvSUJp4so3gwLNEyIREbyZ6VZbrDrm0DI2wSEoL8Unbnv1pbp3uo7MS6Hq5PakQpoGCTyU4n+L6X2SmdQdwJWoXZllcZCugdru0fxZd3SOKDMa5B+XE1IO+pVH/VQqWFyJzSXqQ2UGhARWt8zrMVcc=
+  - secure: i5kx3B4q/PbIVm4YPX50yC1ewL7+Lnx+OKnOEaIW2FyhMfNd4xsN1Or+a8JNv/TfIFCezqCegzoEigB2ouiuQCPmfrOfEbpb73xPZ3YRbntMO/kgYr9l1SoJkZBFsD3wWnckjgrYy0rojBLneLwbx2+OX34N69TaLXT5HCgrBHAbb1yzaSm2bZNPvPMOJpE7WaDOxhhyDP3MxCdIvHXyXOynOAL4I1o3YNY5isFvkCYv8qylok5/N96t+mxTT9yPydBaVhMJGg/J7VpUCev47slQJXhMuzpVi/PschlzC8birO9KpdK9OnwItugBRSJ1CYzg/jk9c9KSf0kMv/gw1mx7nmOMhy7Kvlj881a9nOKJyDvn9Ul3JFEj1uzEBk4J8dQS0dn5LYbU0vEHQ+iziYIy9g2o3M4+N/cRepO9EIgMAysB8k/3x0QAuHSgXt43ImH449wL7cocPE8GnTCBGeMfWFbOuhDC7ukLsYkNU3JP5sgIvLWh3wNww+eLFFbRPTSXyb55xR1GEfdEIS7pWCqMJ95vxngjiEjsuhgDG6lVRpEfk2ncph5ePqgLG0l9S5ZXMWGQLhP/BzEF78a8orTrSwr+5Whp+R4KBYInZ1UeTrtIagVYM7K/OH1BbsRtHFhfneeuzQEJVIT/Ncvu4UeZVSXYz8TE2J48ZsDcGP0=
+  - secure: v2dD+VOFMGSO6IOAF/DQssOcyYmniX31bOHMP9MMhF6btoHujZ1MIHJW+TsF7hNFa0pbncPhQ4tmy2np2R4gg3cPqmCry2BuH8+pyrQn6xSVXtKflDgmKFNLsNS9g38CAiwVwnr3ceqSMU+JFAhUza0pGspOJI/yn46JWWgTHx6ZIAWpsb7wa0WUeFYWqEipUgz6AE5hYbCE9OFiCo1jYaoEIu/I3DsKIOqKiv4JGOR6iz8V0S3HgvOp3pRs408Bc+D9rkWSSGVm5ZmmawT4vPJZWrnKN39j4i9KZcTZw1Dw7TPxZOIdkhiTuSFqN7rjfLBAtw3q2rZLHfIdgUXr24CiPvgMbP3uONMosE2mTtt+Gwq/z/tNA3JXiufXhQniBDJcQaEahrZYMwYpgGsIrgPXoi9xc2nqhM4RY09M6//GprGfg3BVErfPhuvbl44xtkWzn/5m1TV7/7QXZMubfCUaWl2ZeZCeZrbQ8g4C+mKfGk5JX6WGMuD0P9bDRL3YFBkk4tQ1c7nOS1drYG/Ml/wibY/55OrKkVsxz03nQvjkK7Z0GzdBNg8mybzrKD/AjsP5U2A55mYqrzznhfyejhsKDMeuUGxDxWJt9/NVOzXbDbztU9F4Q7OJeB4urAjWpColPKgkwWLwOg6RcLEJE4k+xt71PG0ZLERGKDBvj00=
 install:
-- docker build -f Dockerfile.amd64 -t ${IMAGE}:${BRANCH} .
+- docker build -f Dockerfile.amd64 -t ${IMAGE} .
 script: skip
 after_success:
-- if [[ -z "${TAG}" ]]; then echo "This commit hasn't been tagged, will not be pushed
-  to dockerhub"; exit 0; fi
-- docker --version
 - echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-- docker tag ${IMAGE}:${BRANCH} ${DOCKERHUB}/${IMAGE}:${TAG}
-- docker push ${DOCKERHUB}/${IMAGE}:${TAG}
-- echo "${DOCKERHUB}/${IMAGE}:${TAG}"
+- if [[ "${TRAVIS_BRANCH}" == *test* ]]; then docker tag ${IMAGE} ${DOCKERHUB}/${IMAGE}:${TRAVIS_BRANCH}${TRAVIS_BUILD_NUMBER};
+  docker push ${DOCKERHUB}/${IMAGE}:${TRAVIS_BRANCH}${TRAVIS_BUILD_NUMBER}; echo "${DOCKERHUB}/${IMAGE}:${TRAVIS_BRANCH}${TRAVIS_BUILD_NUMBER}";
+  else docker tag ${IMAGE} ${DOCKERHUB}/${IMAGE}:${TRAVIS_BRANCH}; docker push ${DOCKERHUB}/${IMAGE}:${TRAVIS_BRANCH};
+  echo "${DOCKERHUB}/${IMAGE}:${TRAVIS_BRANCH}"; fi
 notifications:
   email:
     on_success: never
