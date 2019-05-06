@@ -364,7 +364,7 @@ int32_t main(int32_t argc, char **argv) {
         // Torque setting Left and Right
         auto onTorqueRequest = [&socketCAN,&brakeState,VERBOSE](cluon::data::Envelope &&env){
             opendlv::cfsdProxy::TorqueRequestDual torqueReq = cluon::extractMessage<opendlv::cfsdProxy::TorqueRequestDual>(std::move(env));
-            if(env.senderStamp() == 1500){
+            if(env.senderStamp() == 1910){
                 int tmpTorqueLeftValue  = torqueReq.torqueLeft();
                 int tmpTorqueRightValue = torqueReq.torqueRight();
                 //send the message
@@ -402,7 +402,7 @@ int32_t main(int32_t argc, char **argv) {
                 }
             }
         };
-        od4.dataTrigger(opendlv::proxy::TorqueRequest::ID(), onTorqueRequest);
+        od4.dataTrigger(opendlv::cfsdProxy::TorqueRequestDual::ID(), onTorqueRequest);
 
         struct can_frame frame;
         fd_set rfds;
