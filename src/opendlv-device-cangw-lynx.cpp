@@ -161,7 +161,7 @@ int32_t main(int32_t argc, char **argv) {
                     
                     opendlv::proxy::SwitchStateReading msgAMI;
                     msgAMI.state(msg.asMission());
-                    od4.send(msgAMI,ts,1406);
+                    od4.send(msgAMI,ts,1906);
 
                     opendlv::proxy::PedalPositionReading msgBrakeFront;
                     msgBrakeFront.position(msg.brakeFront());
@@ -200,11 +200,11 @@ int32_t main(int32_t argc, char **argv) {
 
                     opendlv::proxy::SwitchStateReading msgKnobR;
                     msgKnobR.state(msg.knobR());
-                    od4.send(msgKnobR,ts,1416);
+                    od4.send(msgKnobR,ts,1916);
 
                     opendlv::proxy::SwitchStateReading msgKnobL;
                     msgKnobL.state(msg.knobL());
-                    od4.send(msgKnobL,ts,1417);
+                    od4.send(msgKnobL,ts,1917);
                 }
             }
         };
@@ -254,22 +254,22 @@ int32_t main(int32_t argc, char **argv) {
         
 // Encode Vehicle State
         opendlv::cfsdProxyCANWriting::ASStatus msgASStatus;
-        auto onSwitchStateReading = [&msgASStatus,VERBOSE](cluon::data::Envelope &&env){
-            opendlv::proxy::SwitchStateReading sstateReading = cluon::extractMessage<opendlv::proxy::SwitchStateReading>(std::move(env));
+        auto onSwitchStateRequest = [&msgASStatus,VERBOSE](cluon::data::Envelope &&env){
+            opendlv::proxy::SwitchStateRequest sstateRequest = cluon::extractMessage<opendlv::proxy::SwitchStateRequest>(std::move(env));
             std::lock_guard<std::mutex> l(as_Sensor_update_mutex);
             if(env.senderStamp() == 1401 ){//Switch AS State
-                msgASStatus.asState(sstateReading.state());
+                msgASStatus.asState(sstateRequest.state());
                 if (VERBOSE){
-                    std::cerr << "received asState:"<< sstateReading.state() <<std::endl;
+                    std::cerr << "received asState:"<< sstateRequest.state() <<std::endl;
                 }
-            }else if(env.senderStamp() == 1404){// Ready to drive
-                msgASStatus.asRedyToDrive(sstateReading.state());
+            }else if(env.senderStamp() == 1904){// Ready to drive
+                msgASStatus.asRedyToDrive(sstateRequest.state());
                 if (VERBOSE){
-                    std::cerr << "received asRedyToDrive:"<< sstateReading.state() <<std::endl;
+                    std::cerr << "received asRedyToDrive:"<< sstateRequest.state() <<std::endl;
                 }
             }
         };
-        od4.dataTrigger(opendlv::proxy::SwitchStateReading::ID(), onSwitchStateReading);
+        od4.dataTrigger(opendlv::proxy::SwitchStateRequest::ID(), onSwitchStateRequest);
 
         auto onGroundSteeringReading=[&msgASStatus,VERBOSE](cluon::data::Envelope &&env){
             std::lock_guard<std::mutex> l(as_Sensor_update_mutex);
@@ -362,56 +362,46 @@ int32_t main(int32_t argc, char **argv) {
         std::thread dashboardThread(as2dlThread);
     
         // Torque setting Left and Right
-        // Sending the Torque request via CAN tiggered by the Left torque (only after right value is updated). Right value is updating. 
-        // another   is brake is not larger than 3 brakeState>2
-        bool torqueRightGet = false;
-        int torqueRightValue = 0;
-        auto onTorqueRequest = [&torqueRightValue,&torqueRightGet,&socketCAN,&brakeState,VERBOSE](cluon::data::Envelope &&env){
-            opendlv::proxy::TorqueRequest torqueReq = cluon::extractMessage<opendlv::proxy::TorqueRequest>(std::move(env));
-            if(env.senderStamp() == 1501 ){//Right motor 
-                torqueRightGet = true;
-                torqueRightValue = torqueReq.torque();
-            }else if(env.senderStamp() == 1500){// Left motor only send when torque Right and Left both received
-                int tmpTorqueLeftValue  = torqueReq.torque();
-                int tmpTorqueRightValue = torqueRightValue;
-                if(torqueRightGet == true){
-                    torqueRightGet = false;
-                    //send the message
-                    // Message to encode: LYNX19GW_AS_TORQUE_REQ_FRAME_ID
-                    if(brakeState >= 2){
-                        tmpTorqueRightValue = 0;
-                        tmpTorqueLeftValue  = 0;
-                    }
-                    lynx19gw_as_torque_req_t tmp;
-                    memset(&tmp, 0, sizeof(tmp));
-                    // The following msg would have to be passed to this encoder externally.
-                    opendlv::cfsdProxyCANWriting::ASTorque msg;
-                    tmp.torque_set_point_left = lynx19gw_as_torque_req_torque_set_point_left_encode(tmpTorqueLeftValue);
-                    tmp.torque_set_point_right = lynx19gw_as_torque_req_torque_set_point_right_encode(tmpTorqueRightValue);
-                    //The following statement packs the encoded values into a CAN frame.
-                    if (VERBOSE){
-                        std::clog << "Received msg Torque: Left: " << tmp.torque_set_point_left << " Right: "<< tmp.torque_set_point_right;
-                    }
-                    uint8_t buffer[8];
-                    int len = lynx19gw_as_torque_req_pack(buffer, &tmp, 8);
-                    if ( (0 < len) && (-1 < socketCAN) ) {
+        auto onTorqueRequest = [&socketCAN,&brakeState,VERBOSE](cluon::data::Envelope &&env){
+            opendlv::cfsdProxy::TorqueRequestDual torqueReq = cluon::extractMessage<opendlv::cfsdProxy::TorqueRequestDual>(std::move(env));
+            if(env.senderStamp() == 1500){
+                int tmpTorqueLeftValue  = torqueReq.torqueLeft();
+                int tmpTorqueRightValue = torqueReq.torqueRight();
+                //send the message
+                // Message to encode: LYNX19GW_AS_TORQUE_REQ_FRAME_ID
+                if(brakeState >= 2){
+                    tmpTorqueRightValue = 0;
+                    tmpTorqueLeftValue  = 0;
+                }
+                lynx19gw_as_torque_req_t tmp;
+                memset(&tmp, 0, sizeof(tmp));
+                // The following msg would have to be passed to this encoder externally.
+                opendlv::cfsdProxyCANWriting::ASTorque msg;
+                tmp.torque_set_point_left = lynx19gw_as_torque_req_torque_set_point_left_encode(tmpTorqueLeftValue);
+                tmp.torque_set_point_right = lynx19gw_as_torque_req_torque_set_point_right_encode(tmpTorqueRightValue);
+                //The following statement packs the encoded values into a CAN frame.
+                if (VERBOSE){
+                    std::clog << "Received msg Torque: Left: " << tmp.torque_set_point_left << " Right: "<< tmp.torque_set_point_right;
+                }
+                uint8_t buffer[8];
+                int len = lynx19gw_as_torque_req_pack(buffer, &tmp, 8);
+                if ( (0 < len) && (-1 < socketCAN) ) {
 #ifdef __linux__
-                        struct can_frame frame;
-                        frame.can_id = LYNX19GW_AS_TORQUE_REQ_FRAME_ID;
-                        frame.can_dlc = len;
-                        memcpy(frame.data, buffer, 8);
-                        int32_t nbytes = ::write(socketCAN, &frame, sizeof(struct can_frame));
-                        if (VERBOSE){
-                            std::clog<<"wrote!"<<std::endl;
-                        }
-                        if (!(0 < nbytes)) {
-                            std::clog << "[SocketCANDevice] Writing ID = " << frame.can_id << ", LEN = " << +frame.can_dlc << ", strerror(" << errno << "): '" << strerror(errno) << "'" << std::endl;
-                        }
+                    struct can_frame frame;
+                    frame.can_id = LYNX19GW_AS_TORQUE_REQ_FRAME_ID;
+                    frame.can_dlc = len;
+                    memcpy(frame.data, buffer, 8);
+                    int32_t nbytes = ::write(socketCAN, &frame, sizeof(struct can_frame));
+                    if (VERBOSE){
+                        std::clog<<"wrote!"<<std::endl;
+                    }
+                    if (!(0 < nbytes)) {
+                        std::clog << "[SocketCANDevice] Writing ID = " << frame.can_id << ", LEN = " << +frame.can_dlc << ", strerror(" << errno << "): '" << strerror(errno) << "'" << std::endl;
+                    }
 #endif
                 }
-                
             }
-        }};
+        };
         od4.dataTrigger(opendlv::proxy::TorqueRequest::ID(), onTorqueRequest);
 
         struct can_frame frame;
