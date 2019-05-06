@@ -22,6 +22,8 @@ Messege senderStamps See: CAN Mapping.md
 
 2019-04-14 ADD Messages : KnobL and KnobR
 
+2019-05-06 Switch the lynx-v0.1.1.odvd message set to cfsd-extended-message-set-v0.0.1.odvd, changes message names
+
 run the microservice:
 
 ```
@@ -32,13 +34,13 @@ docker run --rm -ti --net=host --privileged chalmersfsd/cfsd-proxy-cangw-lynx:v0
 generate the dbc map file:
 
 ```
-docker run --rm -ti -v $PWD/src/:/in -w /in dbc2odvd:v0.0.0 generateHeaderOnly.sh lynx19gw.dbc lynx.odvd
+docker run --rm -ti -v $PWD/src/:/in -w /in chalmersrevere/dbc2odvd-amd64:v0.0.6  generateHeaderOnly.sh lynx19gw.dbc cfsd-extened-message-set-v0.0.1.odvd
 ```
 
 get the code Snippet:
 
 ```
-docker run --rm -ti -v $PWD/src/:/in -w /in dbc2odvd:v0.0.0 generateMappingCodeSnippet.awk lynx19gw.dbc.map
+docker run --rm -ti -v $PWD/src/:/in -w /in chalmersrevere/dbc2odvd-amd64:v0.0.6 generateMappingCodeSnippet.awk lynx19gw.dbc.map
 ```
 
 Setting the CAN:

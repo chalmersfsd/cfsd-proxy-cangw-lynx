@@ -68,7 +68,7 @@ int32_t main(int32_t argc, char **argv) {
             if (LYNX19GW_NF_NR_SENSORS_1_FRAME_ID == canFrameID) {
                 lynx19gw_nf_nr_sensors_1_t tmp;
                 if (0 == lynx19gw_nf_nr_sensors_1_unpack(&tmp, src, len)) {
-                    opendlv::proxyCANReading::PedalRatio msg;
+                    opendlv::cfsdProxyCANReading::PedalRatio msg;
                     msg.brake(lynx19gw_nf_nr_sensors_1_brake_decode(tmp.brake));
                     msg.throttle(lynx19gw_nf_nr_sensors_1_throttle_decode(tmp.throttle));
                     // The following block is automatically added to demonstrate how to display the received values.
@@ -92,7 +92,7 @@ int32_t main(int32_t argc, char **argv) {
             if (LYNX19GW_NF_NR_SENSORS_2_FRAME_ID == canFrameID) {
                 lynx19gw_nf_nr_sensors_2_t tmp;
                 if (0 == lynx19gw_nf_nr_sensors_2_unpack(&tmp, src, len)) {
-                    opendlv::proxyCANReading::WheelSpeedFront msg;
+                    opendlv::cfsdProxyCANReading::WheelSpeedFront msg;
                     msg.wheelFrontLeft(lynx19gw_nf_nr_sensors_2_wheel_speed_fl_decode(tmp.wheel_speed_fl));
                     msg.wheelFrontRight(lynx19gw_nf_nr_sensors_2_wheel_speed_fr_decode(tmp.wheel_speed_fr));
                     // The following block is automatically added to demonstrate how to display the received values.
@@ -117,7 +117,7 @@ int32_t main(int32_t argc, char **argv) {
             if (LYNX19GW_NR_DL_SENSORS_1_FRAME_ID == canFrameID) {
                 lynx19gw_nr_dl_sensors_1_t tmp;
                 if (0 == lynx19gw_nr_dl_sensors_1_unpack(&tmp, src, len)) {
-                    opendlv::proxyCANReading::WheelSpeedRare msg;
+                    opendlv::cfsdProxyCANReading::WheelSpeedRare msg;
                     msg.wheelRareLeft(lynx19gw_nr_dl_sensors_1_wheel_speed_rl_decode(tmp.wheel_speed_rl));
                     msg.wheelRareRight(lynx19gw_nr_dl_sensors_1_wheel_speed_rr_decode(tmp.wheel_speed_rr));
                     // The following block is automatically added to demonstrate how to display the received values.
@@ -144,7 +144,7 @@ int32_t main(int32_t argc, char **argv) {
             if (LYNX19GW_DL_AS_STATUS_FRAME_ID == canFrameID) {
                 lynx19gw_dl_as_status_t tmp;
                 if (0 == lynx19gw_dl_as_status_unpack(&tmp, src, len)) {
-                    opendlv::proxyCANReading::AsStatus msg;
+                    opendlv::cfsdProxyCANReading::AsStatus msg;
                     msg.asMission(lynx19gw_dl_as_status_as_mission_decode(tmp.as_mission));
                     msg.brakeFront(lynx19gw_dl_as_status_brake_front_decode(tmp.brake_front));
                     msg.brakeRear(lynx19gw_dl_as_status_brake_rear_decode(tmp.brake_rear));
@@ -186,7 +186,7 @@ int32_t main(int32_t argc, char **argv) {
             if (LYNX19GW_NF_DL_BUTTONS_RTD_FRAME_ID == canFrameID) {
                 lynx19gw_nf_dl_buttons_rtd_t tmp;
                 if (0 == lynx19gw_nf_dl_buttons_rtd_unpack(&tmp, src, len)) {
-                    opendlv::proxyCANReading::Knobs msg;
+                    opendlv::cfsdProxyCANReading::Knobs msg;
                     msg.knobL(lynx19gw_nf_dl_buttons_rtd_knob_l_decode(tmp.knob_l));
                     msg.knobR(lynx19gw_nf_dl_buttons_rtd_knob_r_decode(tmp.knob_r));
                     // The following block is automatically added to demonstrate how to display the received values.
@@ -253,7 +253,7 @@ int32_t main(int32_t argc, char **argv) {
 #endif
         
 // Encode Vehicle State
-        opendlv::proxyCANWriting::ASStatus msgASStatus;
+        opendlv::cfsdProxyCANWriting::ASStatus msgASStatus;
         auto onSwitchStateReading = [&msgASStatus,VERBOSE](cluon::data::Envelope &&env){
             opendlv::proxy::SwitchStateReading sstateReading = cluon::extractMessage<opendlv::proxy::SwitchStateReading>(std::move(env));
             std::lock_guard<std::mutex> l(as_Sensor_update_mutex);
@@ -323,7 +323,7 @@ int32_t main(int32_t argc, char **argv) {
         auto as2dlThread{[&msgASStatus,&socketCAN,&od4,AS2DLFREQ](){
             auto as2dlAtFrequency{[&msgASStatus,&socketCAN]() -> bool{
             // The following msg would have to be passed to this encoder externally.
-            opendlv::proxyCANWriting::ASStatus msgASStatusCpy;
+            opendlv::cfsdProxyCANWriting::ASStatus msgASStatusCpy;
             {
                 std::lock_guard<std::mutex> l(as_Sensor_update_mutex);
                 msgASStatusCpy = msgASStatus;
@@ -385,7 +385,7 @@ int32_t main(int32_t argc, char **argv) {
                     lynx19gw_as_torque_req_t tmp;
                     memset(&tmp, 0, sizeof(tmp));
                     // The following msg would have to be passed to this encoder externally.
-                    opendlv::proxyCANWriting::ASTorque msg;
+                    opendlv::cfsdProxyCANWriting::ASTorque msg;
                     tmp.torque_set_point_left = lynx19gw_as_torque_req_torque_set_point_left_encode(tmpTorqueLeftValue);
                     tmp.torque_set_point_right = lynx19gw_as_torque_req_torque_set_point_right_encode(tmpTorqueRightValue);
                     //The following statement packs the encoded values into a CAN frame.
