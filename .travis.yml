@@ -24,7 +24,7 @@ install:
 script: skip
 after_success:
 - if [[ -z "${TAG}" ]]; then echo "This commit hasn't been tagged, will not be pushed
-  to dockerhub"; exit 0; fi
+  to dockerhub."; exit 0; fi
 - docker --version
 - echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
 - docker tag ${IMAGE}:${BRANCH} ${DOCKERHUB}/${IMAGE}:${TAG}
