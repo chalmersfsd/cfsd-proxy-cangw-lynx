@@ -257,7 +257,7 @@ int32_t main(int32_t argc, char **argv) {
         auto onSwitchStateRequest = [&msgASStatus,VERBOSE](cluon::data::Envelope &&env){
             opendlv::proxy::SwitchStateRequest sstateRequest = cluon::extractMessage<opendlv::proxy::SwitchStateRequest>(std::move(env));
             std::lock_guard<std::mutex> l(as_Sensor_update_mutex);
-            if(env.senderStamp() == 1401 ){//Switch AS State
+            if(env.senderStamp() == 2101 ){//Switch AS State
                 msgASStatus.asState(sstateRequest.state());
                 if (VERBOSE){
                     std::cerr << "received asState:"<< sstateRequest.state() <<std::endl;
