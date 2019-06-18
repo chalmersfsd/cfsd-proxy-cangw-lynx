@@ -254,15 +254,22 @@ int32_t main(int32_t argc, char **argv) {
         
 // Encode Vehicle State
         opendlv::cfsdProxyCANWriting::ASStatus msgASStatus;
+        auto onSwitchStateReading = [&msgASStatus,VERBOSE](cluon::data::Envelope &&env){
+            opendlv::proxy::SwitchStateReading sstateReading = cluon::extractMessage<opendlv::proxy::SwitchStateReading>(std::move(env));
+            std::lock_guard<std::mutex> l(as_Sensor_update_mutex);
+            if(env.senderStamp() == 2101 ){// AS State reading
+                msgASStatus.asState(sstateReading.state());
+                if (VERBOSE){
+                    std::cerr << "received asState:"<< sstateReading.state() <<std::endl;
+                }
+            }
+        };
+        od4.dataTrigger(opendlv::proxy::SwitchStateReading::ID(), onSwitchStateReading);
+        
         auto onSwitchStateRequest = [&msgASStatus,VERBOSE](cluon::data::Envelope &&env){
             opendlv::proxy::SwitchStateRequest sstateRequest = cluon::extractMessage<opendlv::proxy::SwitchStateRequest>(std::move(env));
             std::lock_guard<std::mutex> l(as_Sensor_update_mutex);
-            if(env.senderStamp() == 2101 ){//Switch AS State
-                msgASStatus.asState(sstateRequest.state());
-                if (VERBOSE){
-                    std::cerr << "received asState:"<< sstateRequest.state() <<std::endl;
-                }
-            }else if(env.senderStamp() == 1904){// Ready to drive
+            if(env.senderStamp() == 1904){// Ready to drive
                 msgASStatus.asRedyToDrive(sstateRequest.state());
                 if (VERBOSE){
                     std::cerr << "received asRedyToDrive:"<< sstateRequest.state() <<std::endl;
