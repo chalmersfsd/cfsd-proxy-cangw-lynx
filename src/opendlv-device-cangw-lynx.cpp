@@ -369,7 +369,7 @@ int32_t main(int32_t argc, char **argv) {
                 int tmpTorqueRightValue = torqueReq.torqueRight();
                 //send the message
                 // Message to encode: LYNX19GW_AS_TORQUE_REQ_FRAME_ID
-                if(brakeState >= 2){
+                if(brakeState >= 10){
                     tmpTorqueRightValue = 0;
                     tmpTorqueLeftValue  = 0;
                 }
