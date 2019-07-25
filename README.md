@@ -34,7 +34,7 @@ docker run --rm -ti --net=host --privileged chalmersfsd/cfsd-proxy-cangw-lynx:v0
 generate the dbc map file:
 
 ```
-docker run --rm -ti -v $PWD/src/:/in -w /in chalmersrevere/dbc2odvd-amd64:v0.0.6  generateHeaderOnly.sh lynx19gw.dbc cfsd-extened-message-set-v0.0.1.odvd
+docker run --rm -ti -v $PWD/src/:/in -w /in chalmersrevere/dbc2odvd-amd64:v0.0.6  generateHeaderOnly.sh lynx19gw.dbc cfsd-extended-message-set-v0.0.2.odvd
 ```
 
 get the code Snippet:

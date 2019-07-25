@@ -86,6 +86,19 @@ message opendlv.cfsdProxyCANReading.Knobs [id = 2009]{
     int knobR [id = 2];
 }
 
+message opendlv.cfsdProxyCANReading.PELeft [id = 2020]{
+    int driveEngagedLeft [id = 1];
+    int torqueEstimateLeft [id = 2];
+    int speedEstimateLeft [id = 3];
+    int errorsLeft [id = 4];
+}
+
+message opendlv.cfsdProxyCANReading.PERight [id = 2021]{
+    int driveEngagedRight [id = 1];
+    int torqueEstimateRight [id = 2];
+    int speedEstimateRight [id = 3];
+    int errorsRight [id = 4];
+}
 /****************/
 
 message opendlv.cfsdProxy.TorqueRequestDual [id = 2010]{

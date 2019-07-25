@@ -42,6 +42,56 @@
 
 std::mutex as_Sensor_update_mutex;//This is a mutex lock for 
 
+std::string ErrorCodeParse(int errorCode){
+    std::string errorMsg;
+    switch (errorCode)
+    {
+    case 1:
+        errorMsg = "Error PE Right code 1 : Motor phase over current";
+        break;
+    case 2:
+        errorMsg = "Error PE Right code 2 : Over Speed";
+        break;
+    case 4:
+        errorMsg = "Error PE Right code 4 : Safe Enable Missing";
+        break;
+    case 8:
+        errorMsg = "Error PE Right code 8 : High Motor Temp";
+        break;
+    case 16:
+        errorMsg = "Error PE Right code 16 : High CPU Temp";
+        break;
+    case 32:
+        errorMsg = "Error PE Right code 32 : High Udc fault";
+        break;
+    case 64:
+        errorMsg = "Error PE Right code 64 : Low Udc fault";
+        break;
+    case 128:
+        errorMsg = "Error PE Right code 128 : High Continuous Load";
+        break;
+    case 256:
+        errorMsg = "Error PE Right code 256 : High PCB Temp";
+        break;
+    case 512:
+        errorMsg = "Error PE Right code 512 : High IGBT Temp";
+        break;
+    case 2048:
+        errorMsg = "Error PE Right code 2048 : Wrong Rotation Direction";
+        break;
+    case 4096:
+        errorMsg = "Error PE Right code 4096 : PWM Control Voltage Fault";
+        break;
+    case 16384:
+        errorMsg = "Error PE Right code 16384 : Communication Time Out Fault";
+        break;
+    default:
+        break;
+    }
+    return errorMsg;
+}
+
+
 int32_t main(int32_t argc, char **argv) {
     int32_t retCode{1};
     auto commandlineArguments = cluon::getCommandlineArguments(argc, argv);
@@ -103,12 +153,12 @@ int32_t main(int32_t argc, char **argv) {
                                 []() {});
                         std::cout << sstr.str() << std::endl;
                     }
-                    opendlv::proxy::WheelSpeedReading msgWheelFrontRight;
-                    msgWheelFrontRight.wheelSpeed(msg.wheelFrontRight());
+                    opendlv::proxy::AxleAngularVelocityReading msgWheelFrontRight;
+                    msgWheelFrontRight.axleAngularVelocity(msg.wheelFrontRight());
                     od4.send(msgWheelFrontRight, ts, 1903); // 1903 for Front Right
 
-                    opendlv::proxy::WheelSpeedReading msgWheelFrontLeft;
-                    msgWheelFrontLeft.wheelSpeed(msg.wheelFrontLeft());
+                    opendlv::proxy::AxleAngularVelocityReading msgWheelFrontLeft;
+                    msgWheelFrontLeft.axleAngularVelocity(msg.wheelFrontLeft());
                     od4.send(msgWheelFrontLeft, ts, 1904); // 1904 for Front Left
                 }
             }
@@ -129,12 +179,12 @@ int32_t main(int32_t argc, char **argv) {
                         std::cout << sstr.str() << std::endl;
                     }
 
-                    opendlv::proxy::WheelSpeedReading msgWheelRareRight;
-                    msgWheelRareRight.wheelSpeed(msg.wheelRareRight());
+                    opendlv::proxy::AxleAngularVelocityReading msgWheelRareRight;
+                    msgWheelRareRight.axleAngularVelocity(msg.wheelRareRight());
                     od4.send(msgWheelRareRight, ts, 1901); // 1901 for Rare Right
                     
-                    opendlv::proxy::WheelSpeedReading msgWheelRareLeft;
-                    msgWheelRareLeft.wheelSpeed(msg.wheelRareLeft());
+                    opendlv::proxy::AxleAngularVelocityReading msgWheelRareLeft;
+                    msgWheelRareLeft.axleAngularVelocity(msg.wheelRareLeft());
                     od4.send(msgWheelRareLeft, ts, 1902); //1902 for Rare Left
 
                 }
@@ -205,6 +255,73 @@ int32_t main(int32_t argc, char **argv) {
                     opendlv::proxy::SwitchStateReading msgKnobL;
                     msgKnobL.state(msg.knobL());
                     od4.send(msgKnobL,ts,1917);
+                }
+            }
+            if (LYNX19GW_PER_PDO_1_TX_FRAME_ID == canFrameID) {
+                lynx19gw_per_pdo_1_tx_t tmp;
+                if (0 == lynx19gw_per_pdo_1_tx_unpack(&tmp, src, len)) {
+                    opendlv::cfsdProxyCANReading::PERight msg;
+                    msg.driveEngagedRight(lynx19gw_per_pdo_1_tx_drive_engaged_right_decode(tmp.drive_engaged_right));
+                    msg.torqueEstimateRight(lynx19gw_per_pdo_1_tx_torque_estimate_right_decode(tmp.torque_estimate_right));
+                    msg.speedEstimateRight(lynx19gw_per_pdo_1_tx_speed_estimate_right_decode(tmp.speed_estimate_right));
+                    msg.errorsRight(lynx19gw_per_pdo_1_tx_errors_right_decode(tmp.errors_right));
+                    // The following block is automatically added to demonstrate how to display the received values.
+                    {
+                        if (VERBOSE) {
+                            std::stringstream sstr;
+                            msg.accept([](uint32_t, const std::string &, const std::string &) {},
+                                    [&sstr](uint32_t, std::string &&, std::string &&n, auto v) { sstr << n << " = " << v << '\n'; },
+                                    []() {});
+                            std::cout << sstr.str() << std::endl;
+                        }
+                        if (msg.driveEngagedRight() == 0 && msg.errorsRight() !=0){
+                            opendlv::system::LogMessage errorRight;
+                            errorRight.level(3);
+                            errorRight.description(ErrorCodeParse(msg.errorsRight()));
+                            od4.send(errorRight,ts,1930);
+                        }
+
+                        opendlv::proxy::TorqueReading torqueEstimationRight;
+                        torqueEstimationRight.torque(msg.torqueEstimateRight());
+                        od4.send(torqueEstimationRight,ts,1932);
+
+                        opendlv::proxy::AxleAngularVelocityReading motorSpeedEstimateRight;
+                        motorSpeedEstimateRight.axleAngularVelocity(msg.speedEstimateRight());
+                        od4.send(motorSpeedEstimateRight,ts,1933);
+                    }
+                }
+            }
+            if (LYNX19GW_PEL_PDO_1_TX_FRAME_ID == canFrameID) {
+                lynx19gw_pel_pdo_1_tx_t tmp;
+                if (0 == lynx19gw_pel_pdo_1_tx_unpack(&tmp, src, len)) {
+                    opendlv::cfsdProxyCANReading::PELeft msg;
+                    msg.driveEngagedLeft(lynx19gw_pel_pdo_1_tx_drive_engaged_left_decode(tmp.drive_engaged_left));
+                    msg.torqueEstimateLeft(lynx19gw_pel_pdo_1_tx_torque_estimate_left_decode(tmp.torque_estimate_left));
+                    msg.speedEstimateLeft(lynx19gw_pel_pdo_1_tx_speed_estimate_left_decode(tmp.speed_estimate_left));
+                    msg.errorsLeft(lynx19gw_pel_pdo_1_tx_errors_left_decode(tmp.errors_left));
+                    // The following block is automatically added to demonstrate how to display the received values.
+                    {
+                        if(VERBOSE){
+                            std::stringstream sstr;
+                            msg.accept([](uint32_t, const std::string &, const std::string &) {},
+                                    [&sstr](uint32_t, std::string &&, std::string &&n, auto v) { sstr << n << " = " << v << '\n'; },
+                                    []() {});
+                            std::cout << sstr.str() << std::endl;
+                        }
+                        if (msg.driveEngagedLeft() == 0 && msg.errorsLeft() !=0){
+                            opendlv::system::LogMessage errorLeft;
+                            errorLeft.level(3);
+                            errorLeft.description(ErrorCodeParse(msg.errorsLeft()));
+                            od4.send(errorLeft,ts,1931);
+                        }                    
+                        opendlv::proxy::TorqueReading torqueEstimationLeft;
+                        torqueEstimationLeft.torque(msg.torqueEstimateLeft());
+                        od4.send(torqueEstimationLeft,ts,1934);
+
+                        opendlv::proxy::AxleAngularVelocityReading motorSpeedEstimateLeft;
+                        motorSpeedEstimateLeft.axleAngularVelocity(msg.speedEstimateLeft());
+                        od4.send(motorSpeedEstimateLeft,ts,1935);
+                    }
                 }
             }
         };
