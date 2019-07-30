@@ -215,12 +215,13 @@ int32_t main(int32_t argc, char **argv) {
 
                     opendlv::proxy::PedalPositionReading msgBrakeFront;
                     msgBrakeFront.position(msg.brakeFront());
-                    brakeState = msg.brakeFront();//update brake pressure
                     od4.send(msgBrakeFront,ts,1922);
 
 
                     opendlv::proxy::PedalPositionReading msgBrakeRare;
                     msgBrakeRare.position(msg.brakeRear());
+                    brakeState = msg.brakeRear();//update brake pressure
+
                     od4.send(msgBrakeRare,ts,1923);
 
                     opendlv::proxy::VoltageReading msgAccSoC;
