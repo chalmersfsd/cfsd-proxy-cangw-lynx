@@ -494,10 +494,10 @@ int32_t main(int32_t argc, char **argv) {
                 int tmpTorqueRightValue = torqueReq.torqueRight();
                 //send the message
                 // Message to encode: LYNX19GW_AS_TORQUE_REQ_FRAME_ID
-                if(brakeState >= 10){
-                    tmpTorqueRightValue = 0;
-                    tmpTorqueLeftValue  = 0;
-                }
+                //if(brakeState >= 10){
+                //    tmpTorqueRightValue = 0;
+                //    tmpTorqueLeftValue  = 0;
+                //}
                 lynx19gw_as_torque_req_t tmp;
                 memset(&tmp, 0, sizeof(tmp));
                 // The following msg would have to be passed to this encoder externally.
